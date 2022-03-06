@@ -1,18 +1,17 @@
 #Nour_Rabee_1191035
-
 #asking the user to enter the name of the content file
 echo "Please enter the name of the content file."
 read filename
 
-if [ ! -e $filename ]
+if [ ! -e $filename ] # if the file does not exist
 then
-#raisimg an error message if the file does not exist
+#raising an error message if the file does not exist
   echo "file does not exist! Please try again!"
   exit 1
 else
    while(true)
    do
-#showing the available operations
+   #showing the available operations
    printf "\n****Welcome to Contact Managment System****\n
          \tMAIN MENU\t
        ================================
@@ -63,12 +62,12 @@ do
 
    echo "please enter the phone number,from 9 to 10 numbers(not optional)"
    read phoneNum
-   if [[ $phoneNum =~ [^[:digit:]] ]]
+   if [[ $phoneNum =~ [^[:digit:]] ]] #???????
    then
      echo "Try again! This phone number consists of nondigit elements!!"
      continue
    else
-         digitsNum=$( echo -n "$phoneNum" | wc -c)
+         digitsNum=$( echo -n "$phoneNum" | wc -c) #-n -- > string is not null
          if [ "$digitsNum" -eq 9 -o "$digitsNum" -eq 10 ]
          then
            contactInfo+=", $phoneNum"
@@ -89,7 +88,7 @@ if [ $answer2 = "yes" ]
 then
    echo "please enter the email address:"
    read email
-  if [[ $email == *"@"* ]]
+  if [[ $email == "@" ]] # ** means a substring of a string
   then
     contactInfo+=", $email"
      break
@@ -101,13 +100,13 @@ elif [ $answer2 = "no" ]
 then
 break
 else
-echo "Oops!Inval id input, try again"
+echo "Oops!Invalid input, try again"
 continue
 fi
 done
 #########
 echo "$contactInfo" >> contact.txt
-
+printf "\n"
 cat $filename
 ;;
 
@@ -125,9 +124,9 @@ read choice
 
 if [ $choice -eq 1 ]
 then
-sort -k1 $filename > sorting.txt
-
+sort -k1 $filename > sorting.txt 
 #sorting data based on the first column "first name"
+
   printf " Which Fields do you want to show?
            [1] First name
            [2] Last name
@@ -140,14 +139,14 @@ read choice
 if [ $choice -eq 1 ]
 then
 
-cut -d "," -f1 sorting.txt
+cut -d "," -f1 sorting.txt #-d stands for delimiter
 
 elif [ $choice -eq 2 ]
 then
 
 while read line
 do
-N=$(echo $line | tr -dc "," | wc -c)
+N=$(echo $line | tr -dc "," | wc -c) # delete everything except commas 
 N=$(($N+1))
 
 if [ $N -eq 4 ]
@@ -156,7 +155,7 @@ echo $line | cut -d "," -f2
 
 elif [ $N -eq  3 ]
 then
-if [[ $line != *"@"* ]]
+if [[ $line != "@" ]]
 then
 echo $line | cut -d "," -f2
 fi
@@ -165,7 +164,7 @@ done < sorting.txt
 
 elif [ $choice -eq 3 ]
 then
-grep '[0-9][0-9]*' sorting.txt > info.txt
+grep '[0-9][0-9]*' sorting.txt > info.txt #searching for all the lines that matches any digits followed by zero or more digits.
 
 while read line
 do
@@ -180,7 +179,7 @@ then
 echo $line | cut -d "," -f2
 elif [ $N -eq  3 ]
 then
-if [[ $line == *"@"* ]]
+if [[ $line == "@" ]]
 then
 echo $line | cut -d "," -f2
 else
@@ -192,7 +191,7 @@ done < info.txt
 
 elif [ $choice -eq 4 ]
 then
-grep "@" sorting.txt > info.txt
+grep "@" sorting.txt > info.txt #searching for all lines that contains @ and transfer them to info,txt
 
 while read line
 do
@@ -204,7 +203,7 @@ then
 echo $line | cut -d "," -f4
 elif [ $N -eq  3 ]
 then
-if [[ $line == *"@"* ]]
+if [[ $line == "@" ]]
 then
 echo $line | cut -d "," -f3
 fi
@@ -232,7 +231,7 @@ echo $line >> lastname.txt
 
 elif [ $N -eq  3 ]
 then
-if [[ $line != *"@"* ]]
+if [[ $line != "@" ]]
 then
 echo $line >> lastname.txt
 fi
@@ -289,8 +288,6 @@ done
 
 #List all contacts
 
-
-
         3)
 
 echo " please enter any info about that contact you are searching for:"
@@ -301,7 +298,7 @@ N=$(($N+1))
 
 if [ $N -eq 1 ]
 then
-grep -i "$info" contact.txt
+grep -i "$info" contact.txt #-i ignore uppercase vs. lowercase for matching and display them 
 
 elif [ $N -eq 2 ]
 then
@@ -344,16 +341,14 @@ done < contact.txt
 fi
 ;;
 
-
         4)
-cat -n $filename
+cat -n $filename 
 echo "PLease enter the number of line you want to edit:\n"
 read n
 line=$(head -n $n $filename | tail -1 )
 echo $line
 N=$(echo $line | tr -dc "," | wc -c)
 N=$(($N+1))
-
 
 while true; do
 if [ $N -eq 4 ]
@@ -373,8 +368,10 @@ then
   name=$(echo $line | cut -d "," -f1 )
   echo "Please enter the new first name:"
   read newname
+  
   #s in sed to search and replace
   sed -i ""$n"s/$name/$newname/g" $filename
+  
 elif [ $choice -eq 2 ]
 then
  echo "Please enter the new last name:"
@@ -402,7 +399,7 @@ elif [ $choice -eq 4 ]
 then
 echo "please enter the new email:"
 read email
-if [[ $email == *"@"* ]]
+if [[ $email == "@" ]]
 then
    emailAddress=$(echo $line | cut -d "," -f4 )
    sed -i ""$n"s/$emailAddress/$email/g" $filename
@@ -411,7 +408,7 @@ else
 fi
 elif [ $choice -eq 5 ]
 then
-exit 0
+break
 else
 echo "invalid option! please try again"
 fi
@@ -459,7 +456,7 @@ fi
 
 elif [ $N -eq 3 ]
 then
-if [[ $line != *"@"* ]]
+if [[ $line != "@" ]]
 then
 printf "which fields do you want to edit?
     ======================================
@@ -544,7 +541,7 @@ elif [ $choice -eq 3 ]
 then
 echo "please enter the new email:"
 read email
-if [[ $email == *"@"* ]]
+if [[ $email == "@" ]]
  then
    emailAddress=$(echo $line | cut -d "," -f4 )
    sed -i ""$n"s/$emailAddress/$email/g" $filename
